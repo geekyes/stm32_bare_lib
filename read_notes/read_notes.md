@@ -40,7 +40,7 @@ static inline void LedInit() {
 
 ## 单片机程序是怎么组成的？
 ![ 单片机程序是怎么组成的？
-](https://github.com/geekyes/stm32_bare_lib/read_notes/mcu_program_form.svg)
+](https://github.com/geekyes/stm32_bare_lib/blob/master/read_notes/mcu_program_form.svg)
 
 ## 开发工具 make gdb openocd
 - 应该使用脚本，来写各种工具的加载部分，这个对每个工程都是独立的，自由度更大，
