@@ -92,3 +92,6 @@ _ld_data_load_source = LOADADDR(.data);
 }
 
 }  /* SECTIONS */
+
+/* 自己写链接脚本还是有难度，涉及的知识太多，至少目前自己解决不了，就是看懂都还
+ * 是个问题。 */

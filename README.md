@@ -1,3 +1,6 @@
+# fork 这个工程的目的
+ * 学习下这个工程的结构，[学习笔记总结](https://github.com/geekyes/stm32_bare_lib/read_notes/read_notes.md)
+
 # STM32 Bare Library
 
 System functions and example code for programming the "Blue Pill"

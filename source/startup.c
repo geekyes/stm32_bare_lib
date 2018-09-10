@@ -27,16 +27,27 @@ extern uint32 _ld_bss_data_stop;
 extern void main();
 extern void OnSysTick();
 
+/* 什么是 semihosting: semihosting 是针对ARM目标机的一种机制，它能够根据
+ * 应用程序代码的输入 / 输出请求，与运行有调试功能的主机通讯。
+ * 这种技术允许主机为通常没有输入和输出功能的目标硬件提供主机资源。
+ * 详细介绍： https://blog.csdn.net/yhneng/article/details/6299893 */
 // Used for rdimon semihosting (printf debugging)
 extern void initialise_monitor_handles(void);
 
 // Unhandled exceptions
+/* __attribute__((section("section_name"))) --> 被修饰的数据放入指定段 */
 __attribute__((section(".text.interrupt_handler"))) void _infinite_loop() {
   while (1)
     ;
 }
 
 // Overridable interrupt handlers
+/* 
+ * __attribute__((weak)) --> 将此符号转为弱符号类型，在链接阶段函数，全局变量
+ *     都是一个符号，唯一的符号，需要将符号转为地址值，一般如果有两个一样的符号
+ *     就会报错，但是如果其中一个使用了 weak 的修饰，这两个符号就可以共存，
+ *     当没有被修饰的那个符号不存在是，就会用这个弱符号。
+ */
 __attribute__((weak)) void MemFaultHandler() { _infinite_loop(); }
 __attribute__((weak)) void BusFaultHandler() { _infinite_loop(); }
 __attribute__((weak)) void OnAdcInterrupt() { _infinite_loop(); }
@@ -50,6 +61,7 @@ __attribute__((weak)) void OnDma1Channel7Interrupt() { _infinite_loop(); }
 
 // We need this assembler to store the register information for debugging.
 void HardFaultHandlerASM(void) {
+    /* 插入汇编代码， gcc 语法 */
   __asm(
       "TST lr, #4\n"  // Test for MSP or PSP
       "ITE EQ\n"
@@ -98,6 +110,7 @@ __attribute__((weak)) void HardFaultHandler(uint32_t stack[]) {
   LOG_HEX32(pc);
   LOG_HEX32(psr);
   // Trigger the debugger, if it's available.
+  /* 使处理器进入调试模式 */
   __asm volatile("BKPT #01");
   _infinite_loop();
 }
@@ -112,6 +125,7 @@ void _load_data_from_flash() {
 }
 
 // "Zero" uninitialized data with DEADBEEF.
+/* TODO 为什么要初始化为这个值？ */
 void _zero_initialize_bss_data() {
   // Volatile is important here to make sure the loop isn't optimized away.
   for (volatile uint32* dest = &_ld_bss_data_start; dest != &_ld_bss_data_stop;
